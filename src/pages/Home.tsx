@@ -1,14 +1,50 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
 import { Task, TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
+import { AlertModal, AlertProps, Options } from '../components/AlertModal';
 
 export function Home() {
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [alertModalProps, setAlertModalProps] = useState<AlertProps>();
+
+    function showModal(title: string, options: Options[]) {
+        setAlertModalProps({
+            isVisible: true,
+            title: title,
+            options: options,
+        });
+    }
+
+    function closeModal(onHide: boolean) {
+        if (onHide) {
+            setAlertModalProps({ isVisible: false, title: '', options: [] });
+            return;
+        }
+
+        setAlertModalProps({
+            isVisible: false,
+            title: alertModalProps?.title,
+            options: alertModalProps?.options,
+        });
+    }
 
     function handleAddTask(newTaskTitle: string) {
+        showModal('titulo', [
+            {
+                text: 'texto',
+                optionSelected: () => {
+                    console.log('selecionado');
+                },
+            },
+        ]);
+
+        if (!newTaskTitle) {
+            return;
+        }
+
         const newTask = {
             id: new Date().getTime(),
             title: newTaskTitle,
@@ -54,6 +90,11 @@ export function Home() {
 
     return (
         <View style={styles.container}>
+            <AlertModal
+                alertProps={alertModalProps}
+                closeModal={(onHide) => closeModal(onHide)}
+            />
+
             <Header tasksCounter={tasks.length} />
 
             <TodoInput addTask={handleAddTask} />
