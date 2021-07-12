@@ -56,7 +56,7 @@ export function TaskItem({
 
     return (
         <>
-            <View>
+            <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     testID={`button-${index}`}
                     activeOpacity={0.7}
@@ -143,6 +143,7 @@ const style = (isEditing: boolean) =>
         taskText: {
             color: '#666',
             fontFamily: 'Inter-Medium',
+            flex: 1,
         },
         taskMarkerDone: {
             height: 16,
@@ -159,7 +160,6 @@ const style = (isEditing: boolean) =>
             fontFamily: 'Inter-Medium',
         },
         iconsContainer: {
-            flex: 1,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-end',

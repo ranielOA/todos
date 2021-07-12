@@ -10,7 +10,7 @@ export function Home() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [alertModalProps, setAlertModalProps] = useState<AlertProps>();
 
-    function showModal(title: string, options: Options[]) {
+    function showModal(title: string, options?: Options[]) {
         setAlertModalProps({
             isVisible: true,
             title: title,
@@ -32,16 +32,14 @@ export function Home() {
     }
 
     function handleAddTask(newTaskTitle: string) {
-        showModal('titulo', [
-            {
-                text: 'texto',
-                optionSelected: () => {
-                    console.log('selecionado');
-                },
-            },
-        ]);
+        const repeatedTask = tasks.find((task) => task.title === newTaskTitle);
+        if (repeatedTask) {
+            showModal('Você não pode cadastrar uma task com o mesmo nome');
 
-        if (!newTaskTitle) {
+            return;
+        }
+
+        if (!newTaskTitle || repeatedTask) {
             return;
         }
 
@@ -70,7 +68,17 @@ export function Home() {
     }
 
     function handleRemoveTask(id: number) {
-        setTasks(tasks.filter((task) => task.id !== id));
+        showModal('Tem certeza que você deseja remover esse item?', [
+            {
+                text: 'Não',
+            },
+            {
+                text: 'Sim',
+                optionSelected: () => {
+                    setTasks(tasks.filter((task) => task.id !== id));
+                },
+            },
+        ]);
     }
 
     function handleEditTask(taskId: number, taskNewTitle: string) {
@@ -91,7 +99,9 @@ export function Home() {
     return (
         <View style={styles.container}>
             <AlertModal
-                alertProps={alertModalProps}
+                isVisible={alertModalProps?.isVisible}
+                title={alertModalProps?.title}
+                options={alertModalProps?.options}
                 closeModal={(onHide) => closeModal(onHide)}
             />
 
